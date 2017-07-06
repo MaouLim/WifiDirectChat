@@ -2,6 +2,7 @@ package bupt.wifidirectchat.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,6 +107,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.viewHolder> {
 	public void updateItems(List<pair> pairs) {
 		this.pairs.clear();
 		this.pairs.addAll(pairs);
+		Log.e("Adapter", pairs.size() + " ");
 		notifyDataSetChanged();
 	}
 

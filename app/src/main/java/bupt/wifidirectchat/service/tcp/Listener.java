@@ -7,6 +7,7 @@ package bupt.wifidirectchat.service.tcp;
 import android.util.Log;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -19,7 +20,7 @@ public abstract class Listener implements Runnable {
 
 	public static final String TAG = "Listener";
 
-	public static final int DEFAULT_SERVER_PORT = 12345;
+	public static final int DEFAULT_SERVER_PORT = 8787;
 	public static final int DEFAULT_BACKLOG     = 4;
 	public static final int DEFAULT_TIMEOUT     = 1000; /* MS */
 
@@ -27,7 +28,9 @@ public abstract class Listener implements Runnable {
 	private boolean      available    = false;
 	private int          backlog      = DEFAULT_BACKLOG;
 
-	public Listener(int localPort, int backlog) {
+	public Listener(InetAddress localAddress, int localPort, int backlog) {
+
+		Log.e(TAG, "localAddr : " + localAddress.toString());
 		try {
 			this.serverSocket = new ServerSocket(localPort, backlog);
 			this.serverSocket.setSoTimeout(DEFAULT_TIMEOUT);
@@ -39,7 +42,9 @@ public abstract class Listener implements Runnable {
 		}
 	}
 
-	public Listener(int backlog) { this(DEFAULT_SERVER_PORT, backlog); }
+	public Listener(InetAddress localAddress, int backlog) {
+		this(localAddress, DEFAULT_SERVER_PORT, backlog);
+	}
 
 	/* try to close the  */
 	public void close() {
@@ -63,6 +68,7 @@ public abstract class Listener implements Runnable {
 
 		while (available && count < backlog) {
 			try {
+				Log.e(TAG, "start to accept tcp... local address:" + serverSocket.getLocalSocketAddress());
 				handleConnectionEstablished(serverSocket.accept(), this);
 				++count;
 			}

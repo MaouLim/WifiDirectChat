@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.util.Log;
 
 import bupt.wifidirectchat.service.wifi.handler.ConnectionChangedHandler;
 import bupt.wifidirectchat.service.wifi.handler.DeviceChangedHandler;
@@ -23,9 +24,12 @@ public abstract class WifiP2pStateListener
 		           ConnectionChangedHandler,
 				   DeviceChangedHandler {
 
+	public static final String TAG = "WifiP2pStateListener";
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
+		Log.e(TAG, TAG + " onReceive " + action);
 
 		switch (action) {
 			case WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION : {
@@ -45,6 +49,7 @@ public abstract class WifiP2pStateListener
 			case WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION : {
 				NetworkInfo info =
 						(NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+				Log.e(TAG, "current state: " + info.isConnected());
 				onConnectionChanged(info, WifiP2pStateListener.this);
 				return;
 			}

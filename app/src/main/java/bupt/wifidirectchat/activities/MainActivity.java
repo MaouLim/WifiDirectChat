@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.IBinder;
@@ -12,6 +13,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -36,15 +40,19 @@ public class MainActivity extends AppCompatActivity {
 	ServiceConnection serviceConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			binder = (DevicesService) service;
-
+			DevicesService.MBinder mb = (DevicesService.MBinder) service;
+			binder = mb.getService();
+			binder.startListener();
 			binder.initManager(MainActivity.this, (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE));
 
 			binder.searchDevices();
 			binder.setDeviceListener(new DevicesService.DeviceListener() {
 				@Override
 				public void onDeviceDiscover(List<pair> devices) {
+					pairList.clear();
 					pairList.addAll(devices);
+					Log.e("MainActivity", "Devices size " + pairList.size());
+
 				}
 			});
 
@@ -62,22 +70,17 @@ public class MainActivity extends AppCompatActivity {
 
 				@Override
 				public void onConnected() {
-					rv.post(new Runnable() {
-						@Override
-						public void run() {
-							isConnecting = false;
-							startActivity(new Intent(MainActivity.this, ChatActivity.class));
-							binder.cancelDiscover();
-						}
-					});
+					Log.e("MainActivity" ," Connected");
+					isConnecting = false;
+					startActivity(new Intent(MainActivity.this, ChatActivity.class));
+					binder.cancelDiscover();
 				}
 			});
-
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
-
+			// empty
 		}
 	};
 
@@ -94,26 +97,52 @@ public class MainActivity extends AppCompatActivity {
 
 		initToolBar();
 		initList();
-		updateWifiDevices();
+		initButtonListener();
+
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		binder.searchDevices();
+		if(binder!=null) {
+			binder.searchDevices();
+		}
+	}
+
+	// todo
+	@Override
+	public void onResume() {
+		super.onResume();
+		if(binder!=null) {
+			binder.startListener();
+		}
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		if(binder != null) {
+			binder.pauseListener();
+		}
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-
-		unbindService(serviceConnection);
+		binder.pauseListener();
 	}
 
 	public void initToolBar() {
 		Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
 		toolbar.setTitle("设备");
+		Button button = (Button) toolbar.findViewById(R.id.main_update);
+		button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				updateWifiDevices();
+			}
+		});
 
 		setSupportActionBar(toolbar);
 	}
@@ -131,20 +160,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	public void updateWifiDevices() {
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				if (rv != null && la != null) {
-					rv.post(new Runnable() {
-						@Override
-						public void run() {
-							la.updateItems(pairList);
-						}
-					});
-				}
-			}
-		}, 3000);
+		la.updateItems(pairList);
 	}
 
 	public void initButtonListener() {
@@ -153,17 +169,14 @@ public class MainActivity extends AppCompatActivity {
 			public void onItemClick(int position, String content) {
 				if (!isConnecting) {
 					isConnecting = true;
+					Log.e("ItemClick", "BeginConnect");
 					binder.connectToDevice(content, new DevicesService.ConnectListener() {
 						@Override
-						public void onConnectToSuccess(pair _pair) {
-						}
+						public void onConnectToSuccess(pair _pair) { }
 
 						@Override
-						public void onConnectToFail(pair _pair) {
-
-						}
+						public void onConnectToFail(pair _pair) { }
 					});
-
 				}
 				else {
 					Toast.makeText(MainActivity.this, "之前连接正在建立，请不要尝试连接其他设备", Toast.LENGTH_SHORT).show();
@@ -171,5 +184,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 	}
+
+
 
 }

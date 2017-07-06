@@ -33,12 +33,19 @@ public class ChatActivity extends AppCompatActivity {
 	ServiceConnection serviceConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			binder = (DevicesService) service;
+			DevicesService.MBinder mb = (DevicesService.MBinder) service;
+			binder = mb.getService();
 			binder.setMessagesListener(new DevicesService.Messages() {
 				@Override
 				public void onMessageArrived(String message) {
 					messages.add(new pair(" ", message));
-					la.newItem(new pair(" ", message));
+					recyclerView.post(new Runnable() {
+						@Override
+						public void run() {
+							la.updateItems(messages);
+						}
+					});
+
 				}
 			});
 		}
@@ -61,7 +68,13 @@ public class ChatActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_chat);
 
 		initRecycleView();
-		bindService(new Intent(ChatActivity.this, DevicesService.class), serviceConnection, Service.BIND_AUTO_CREATE);
+		bindService(
+			new Intent(ChatActivity.this, DevicesService.class),
+			serviceConnection,
+			Service.BIND_AUTO_CREATE
+		);
+
+		initButtonListener();
 	}
 
 	@Override
@@ -84,6 +97,7 @@ public class ChatActivity extends AppCompatActivity {
 		recyclerView.setAdapter(la);
 	}
 
+	// todo
 	private void initButtonListener() {
 		inputText = (EditText) findViewById(R.id.input_text);
 		sendButton = (Button) findViewById(R.id.send_button);
@@ -92,9 +106,12 @@ public class ChatActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View v) {
 				String m = inputText.getText().toString();
-				binder.sendMessage(m);
+
 				messages.add(new pair("Self", m));
 				la.newItem(new pair("Self", m));
+				binder.sendMessage(m);
+				inputText.setText("");
+
 			}
 		});
 	}
