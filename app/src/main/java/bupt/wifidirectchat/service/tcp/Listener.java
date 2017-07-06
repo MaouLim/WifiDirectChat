@@ -10,6 +10,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/*
+ * this class is to run a listener and listen for the connecting request until
+ * close() invoked, it has to be run on separate thread handleConnectionEstablished()
+ * need to be implement to determinate how to handle the connection.
+ */
 public abstract class Listener implements Runnable {
 
 	public static final String TAG = "Listener";
@@ -34,6 +39,7 @@ public abstract class Listener implements Runnable {
 
 	public Listener() { this(DEFAULT_SERVER_PORT); }
 
+	/* try to close the  */
 	public void close() {
 		available = false;
 

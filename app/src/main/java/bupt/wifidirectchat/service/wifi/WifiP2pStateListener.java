@@ -21,7 +21,7 @@ public abstract class WifiP2pStateListener
 		implements WifiStateHandler,
 		           PeersListChangedHandler,
 		           ConnectionChangedHandler,
-				   DeviceChangedHandler{
+				   DeviceChangedHandler {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {

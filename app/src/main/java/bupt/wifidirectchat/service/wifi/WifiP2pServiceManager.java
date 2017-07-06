@@ -138,17 +138,19 @@ public class WifiP2pServiceManager {
 				channel,
 				request,
 				new WifiP2pManager.ActionListener() {
-				@Override
-				public void onSuccess() {
-					Log.d(TAG, "in connect: removeServiceRequest success.");
-				}
+					@Override
+					public void onSuccess() {
+						Log.d(TAG, "in connect: removeServiceRequest success.");
+					}
 
-				@Override
-				public void onFailure(int reason) {
-					Log.d(TAG, "in connect: removeServiceRequest failed, errorCode: " + reason);
+					@Override
+					public void onFailure(int reason) {
+						Log.d(TAG, "in connect: removeServiceRequest failed, errorCode: " + reason);
+					}
 				}
-			}
 			);
+
+			request = null;
 		}
 
 		manager.connect(

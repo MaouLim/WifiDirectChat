@@ -11,6 +11,11 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+/*
+ * this class is to establish a tcp connection with a specified remote endpoint.
+ * it needs to be run on a separate thread, and user has to implement
+ * handleConnectionEstablished() to tell how to handle the connection when established
+ */
 public abstract class Connector implements Runnable {
 
 	public static final String TAG = "Connector";
