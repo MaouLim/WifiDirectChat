@@ -38,7 +38,7 @@ public abstract class Connector implements Runnable {
 	public void handleConnectionFailed(Socket socket, Throwable throwable, Object sender) {
 
 		/* print the reason of the failure */
-		throwable.printStackTrace();
+		Log.e(TAG, "exception throw when failed to connect", throwable);
 
 		/* try to close the socket */
 		try {
