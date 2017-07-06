@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.Resources;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -26,12 +24,14 @@ import bupt.wifidirectchat.activities.service.DevicesService;
 import bupt.wifidirectchat.adapter.ListAdapter;
 import bupt.wifidirectchat.adapter.pair;
 
-public class MainActivity extends AppCompatActivity {
+/*
+ * Created by Liu Cong on 2017/7/6.
+ */
 
+public class MainActivity extends AppCompatActivity {
 
 	DevicesService binder = null;
 	private boolean isConnecting = false;
-
 
 	ServiceConnection serviceConnection = new ServiceConnection() {
 		@Override
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 				}
 			});
 
-			binder.setP2PConnectStatu(new DevicesService.P2PConnectStatu() {
+			binder.setP2PConnectStatus(new DevicesService.P2PConnectStatus() {
 				@Override
 				public void onConnectStopped() {
 					rv.post(new Runnable() {
@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
 							isConnecting = false;
 						}
 					});
-
 				}
 
 				@Override
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 						public void run() {
 							isConnecting = false;
 							startActivity(new Intent(MainActivity.this, ChatActivity.class));
-							binder.cancleDiscover();
+							binder.cancelDiscover();
 						}
 					});
 				}
@@ -81,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
 		}
 	};
-
 
 	List<pair> pairList = new ArrayList<>();
 	RecyclerView rv;
@@ -97,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
 		initToolBar();
 		initList();
 		updateWifiDevices();
-
-
 	}
 
 	@Override
@@ -114,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 		unbindService(serviceConnection);
 	}
 
-	public void initToolBar(){
+	public void initToolBar() {
 		Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
 		toolbar.setTitle("设备");
@@ -122,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 		setSupportActionBar(toolbar);
 	}
 
-	public void initList(){
+	public void initList() {
 		rv = (RecyclerView) findViewById(R.id.device_list);
 
 		la = new ListAdapter(this);
@@ -134,12 +130,12 @@ public class MainActivity extends AppCompatActivity {
 		rv.setAdapter(la);
 	}
 
-	public void updateWifiDevices(){
+	public void updateWifiDevices() {
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				if(rv != null && la != null){
+				if (rv != null && la != null) {
 					rv.post(new Runnable() {
 						@Override
 						public void run() {
@@ -151,13 +147,13 @@ public class MainActivity extends AppCompatActivity {
 		}, 3000);
 	}
 
-	public void initButtonListener(){
+	public void initButtonListener() {
 		la.setItemClick(new ListAdapter.ItemClick() {
 			@Override
 			public void onItemClick(int position, String content) {
-				if(!isConnecting) {
+				if (!isConnecting) {
 					isConnecting = true;
-					binder.conectToDevice(content, new DevicesService.ConnectListener() {
+					binder.connectToDevice(content, new DevicesService.ConnectListener() {
 						@Override
 						public void onConnectToSuccess(pair _pair) {
 						}
@@ -168,14 +164,12 @@ public class MainActivity extends AppCompatActivity {
 						}
 					});
 
-				}else {
+				}
+				else {
 					Toast.makeText(MainActivity.this, "之前连接正在建立，请不要尝试连接其他设备", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
 	}
-
-
-
 
 }
