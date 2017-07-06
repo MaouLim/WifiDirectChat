@@ -113,18 +113,22 @@ public class WifiP2pServiceManager {
 		});
 	}
 
-	public void discoverPeers(final WifiP2pManager.PeerListListener listener) {
+	public void initDiscover() {
 		manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
 			@Override
 			public void onSuccess() {
-				Log.d(TAG, "in discoverPeers: discoverPeers success.");
+				Log.d(TAG, "in initDiscover: initDiscover success.");
 			}
 
 			@Override
 			public void onFailure(int reason) {
-				Log.d(TAG, "in discoverPeers: discoverPeers failed, errorCode: " + reason);
+				Log.d(TAG, "in initDiscover: initDiscover failed, errorCode: " + reason);
 			}
 		});
+	}
+
+	public void requestPeerList(final WifiP2pManager.PeerListListener listener) {
+		manager.requestPeers(channel, listener);
 	}
 
 	public void connect(final WifiP2pDevice device, final ResultListener listener) {
@@ -186,6 +190,20 @@ public class WifiP2pServiceManager {
 
 	public void requestConnectionInfo(final WifiP2pManager.ConnectionInfoListener listener) {
 		manager.requestConnectionInfo(channel, listener);
+	}
+
+	public void cancelDiscover() {
+		manager.stopPeerDiscovery(channel, new WifiP2pManager.ActionListener() {
+			@Override
+			public void onSuccess() {
+				Log.d(TAG, "in cancelDiscover: stopPeerDiscovery success.");
+			}
+
+			@Override
+			public void onFailure(int reason) {
+				Log.d(TAG, "in cancelDiscover: stopPeerDiscovery failed, errorCode: " + reason);
+			}
+		});
 	}
 
 	public String getInstanceName() {
