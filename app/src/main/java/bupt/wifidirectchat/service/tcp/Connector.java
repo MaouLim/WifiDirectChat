@@ -20,7 +20,7 @@ public abstract class Connector implements Runnable {
 
 	public static final String TAG = "Connector";
 
-	public static final int DEFAULT_REMOTE_PORT = 12345;
+	public static final int DEFAULT_REMOTE_PORT = 8787;
 	public static final int DEFAULT_TIMEOUT     = 10000;
 
 	private InetAddress remoteAddress = null;
@@ -58,8 +58,10 @@ public abstract class Connector implements Runnable {
 		Socket socket = new Socket();
 
 		try {
+			Log.e(TAG, "start to connect tcp... try to connect " + remoteAddress.getHostAddress());
+			socket.bind(null);
 			socket.connect(
-				new InetSocketAddress(remoteAddress, remotePort),
+				new InetSocketAddress(remoteAddress.getHostAddress(), remotePort),
 				DEFAULT_TIMEOUT
 			);
 

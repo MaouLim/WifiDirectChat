@@ -8,6 +8,7 @@ import android.content.Context;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
@@ -118,6 +119,13 @@ public class WifiP2pServiceManager {
 			@Override
 			public void onSuccess() {
 				Log.d(TAG, "in initDiscover: initDiscover success.");
+//				manager.requestPeers(channel, new WifiP2pManager.PeerListListener() {
+//					@Override
+//					public void onPeersAvailable(WifiP2pDeviceList peers) {
+//						Log.e(TAG, "PeersAvailable" + peers.getDeviceList().size());
+//					}
+//				});
+
 			}
 
 			@Override
@@ -144,12 +152,12 @@ public class WifiP2pServiceManager {
 				new WifiP2pManager.ActionListener() {
 					@Override
 					public void onSuccess() {
-						Log.d(TAG, "in connect: removeServiceRequest success.");
+						Log.e(TAG, "in connect: removeServiceRequest success.");
 					}
 
 					@Override
 					public void onFailure(int reason) {
-						Log.d(TAG, "in connect: removeServiceRequest failed, errorCode: " + reason);
+						Log.e(TAG, "in connect: removeServiceRequest failed, errorCode: " + reason);
 					}
 				}
 			);

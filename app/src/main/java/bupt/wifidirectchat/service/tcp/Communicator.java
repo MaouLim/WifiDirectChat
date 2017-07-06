@@ -49,7 +49,7 @@ public abstract class Communicator implements Runnable {
 		}
 
 		try {
-			byte[] buff = message.getBytes(StandardCharsets.UTF_8);
+			byte[] buff = message.getBytes();
 			/* send the length of the message */
 			outputStream.writeInt(buff.length);
 			/* then send the content */
@@ -102,7 +102,7 @@ public abstract class Communicator implements Runnable {
 					if (readSize <= 0) {
 						throw new IOException("Remote socket has been closed.");
 					}
-					builder.append(new String(buff, 0, readSize, StandardCharsets.UTF_8));
+					builder.append(new String(buff, 0, readSize));
 					messageSize -= readSize;
 				}
 
