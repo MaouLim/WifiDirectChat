@@ -1,7 +1,7 @@
 package bupt.wifidirectchat.util;
 
 /*
- * Created by Maou on 2017/7/5.
+ * Created by Maou Lim on 2017/7/5.
  */
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -23,7 +23,7 @@ public class SimpleThreadPool {
 			new LinkedBlockingQueue<Runnable>()
 	);
 
-	public void execute(Runnable runnable) {
+	public static void execute(Runnable runnable) {
 		executor.execute(runnable);
 	}
 }

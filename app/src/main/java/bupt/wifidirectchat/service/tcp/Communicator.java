@@ -12,6 +12,12 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+/*
+ * this class is to manage a connection with a tcp-connected remote endpoint.
+ * user has to implement handleMessageArrived() to tell how to handle the
+ * message from remote. and it must be run on a separate thread. use send() to
+ * send the message to remote endpoint.
+ */
 public abstract class Communicator implements Runnable {
 
 	public static final String TAG = "Communicator";
@@ -102,7 +108,6 @@ public abstract class Communicator implements Runnable {
 				handleMessageArrived(builder.toString(), this);
 			}
 			catch (IOException ex) {
-				// handleConnectionReset
 				Log.e(TAG, "exception in run", ex);
 				available = false;
 			}
