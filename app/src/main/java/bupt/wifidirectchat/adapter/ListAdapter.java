@@ -19,7 +19,6 @@ import bupt.wifidirectchat.R;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.viewHolder> {
 
-
 	List<pair> pairs = new ArrayList<>();
 	LayoutInflater inflater;
 
@@ -30,15 +29,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.viewHolder> {
 
 	@Override
 	public ListAdapter.viewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		return new viewHolder(inflater.inflate(R.layout.item_pair,parent, false));
+		return new viewHolder(inflater.inflate(R.layout.item_pair, parent, false));
 	}
 
-	public interface ItemClick{
+	public interface ItemClick {
 		void onItemClick(int position, String itemContent);
 	}
 
 	ItemClick itemClick = null;
-	public void setItemClick(ItemClick itemClick){
+
+	public void setItemClick(ItemClick itemClick) {
 		this.itemClick = itemClick;
 	}
 
@@ -50,12 +50,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.viewHolder> {
 		holder.linearLayout.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(itemClick != null){
+				if (itemClick != null) {
 					itemClick.onItemClick(holder.getAdapterPosition(), pairs.get(holder.getAdapterPosition()).getContent());
 				}
 			}
 		});
-
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.viewHolder> {
 		return pairs.size();
 	}
 
-	public class viewHolder extends RecyclerView.ViewHolder{
+	public class viewHolder extends RecyclerView.ViewHolder {
 
 		TextView title;
 		TextView content;
@@ -78,22 +77,22 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.viewHolder> {
 		}
 	}
 
-	public void initData(List<pair> pairs){
+	public void initData(List<pair> pairs) {
 		this.pairs.addAll(pairs);
 		notifyDataSetChanged();
 
 	}
 
-	public void newItem(pair pair){
+	public void newItem(pair pair) {
 		pairs.add(pair);
 
 		notifyDataSetChanged();
 	}
 
-	public void removeItem(pair pair){
+	public void removeItem(pair pair) {
 		int i = 0;
-		for(;i < pairs.size();i++){
-			if(pairs.get(i).getTitle().equals(pair.getTitle())){
+		for (; i < pairs.size(); i++) {
+			if (pairs.get(i).getTitle().equals(pair.getTitle())) {
 				break;
 			}
 		}
@@ -104,13 +103,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.viewHolder> {
 
 	}
 
-	public void updateItems(List<pair> pairs){
+	public void updateItems(List<pair> pairs) {
 		this.pairs.clear();
 		this.pairs.addAll(pairs);
 		notifyDataSetChanged();
 	}
-
-
-
 
 }

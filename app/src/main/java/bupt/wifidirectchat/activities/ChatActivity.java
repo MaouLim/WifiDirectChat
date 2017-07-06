@@ -21,10 +21,9 @@ import bupt.wifidirectchat.R;
 import bupt.wifidirectchat.activities.service.DevicesService;
 import bupt.wifidirectchat.adapter.ListAdapter;
 import bupt.wifidirectchat.adapter.pair;
-import bupt.wifidirectchat.service.wifi.WifiP2pStateListener;
 
-/**
- * Created by Maou on 2017/7/6.
+/*
+ * Created by Liu Cong on 2017/7/6.
  */
 
 public class ChatActivity extends AppCompatActivity {
@@ -42,7 +41,6 @@ public class ChatActivity extends AppCompatActivity {
 					la.newItem(new pair(" ", message));
 				}
 			});
-
 		}
 
 		@Override
@@ -53,8 +51,6 @@ public class ChatActivity extends AppCompatActivity {
 
 	RecyclerView recyclerView;
 	ListAdapter la;
-
-
 	EditText inputText;
 	Button sendButton;
 	List<pair> messages = new ArrayList<>();
@@ -66,8 +62,6 @@ public class ChatActivity extends AppCompatActivity {
 
 		initRecycleView();
 		bindService(new Intent(ChatActivity.this, DevicesService.class), serviceConnection, Service.BIND_AUTO_CREATE);
-
-
 	}
 
 	@Override
@@ -75,11 +69,9 @@ public class ChatActivity extends AppCompatActivity {
 		super.onDestroy();
 		binder.stopTCPConnect();
 		unbindService(serviceConnection);
-
-
 	}
 
-	private void initRecycleView(){
+	private void initRecycleView() {
 		recyclerView = (RecyclerView) findViewById(R.id.chat_list);
 
 		la = new ListAdapter(this);
@@ -92,7 +84,7 @@ public class ChatActivity extends AppCompatActivity {
 		recyclerView.setAdapter(la);
 	}
 
-	private void initButtonListener(){
+	private void initButtonListener() {
 		inputText = (EditText) findViewById(R.id.input_text);
 		sendButton = (Button) findViewById(R.id.send_button);
 
@@ -105,10 +97,6 @@ public class ChatActivity extends AppCompatActivity {
 				la.newItem(new pair("Self", m));
 			}
 		});
-
 	}
-
-
-
 
 }

@@ -28,17 +28,16 @@ import bupt.wifidirectchat.service.wifi.WifiP2pStateListener;
 import bupt.wifidirectchat.service.wifi.handler.ResultListener;
 
 /**
- * Created by Maou on 2017/7/6.
+ * Created by Liu Cong on 2017/7/6.
  */
 
 public class DevicesService extends Service {
-
 
 	IBinder binder = new MBinder();
 
 	public class MBinder extends Binder {
 
-		DevicesService getService(){
+		DevicesService getService() {
 			return DevicesService.this;
 		}
 
@@ -51,8 +50,6 @@ public class DevicesService extends Service {
 
 	Communicator communicator = null;
 
-
-
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		return super.onStartCommand(intent, flags, startId);
@@ -64,14 +61,13 @@ public class DevicesService extends Service {
 		return binder;
 	}
 
-
 	public interface DeviceListener {
 		void onDeviceDiscover(List<pair> devices);
 	}
 
 	DeviceListener dl;
 
-	public void setDeviceListener(DeviceListener dl){
+	public void setDeviceListener(DeviceListener dl) {
 		this.dl = dl;
 	}
 
@@ -89,17 +85,15 @@ public class DevicesService extends Service {
 
 	}
 
-	public interface ConnectListener{
+	public interface ConnectListener {
 		void onConnectToSuccess(pair _pair);
+
 		void onConnectToFail(pair _pair);
 	}
+
 	ConnectListener connectListener;
 
-
-
-
-
-	public void conectToDevice(final String deviceAddress, ConnectListener _cl) {
+	public void connectToDevice(final String deviceAddress, ConnectListener _cl) {
 		connectListener = _cl;
 
 		assert wpsm != null;
@@ -115,34 +109,32 @@ public class DevicesService extends Service {
 		wpsm.connect(wifiP2pDevice, new ResultListener() {
 			@Override
 			public void onSuccess(Object sender) {
-				if(connectListener != null) {
+				if (connectListener != null) {
 					connectListener.onConnectToSuccess(_pair);
 				}
-
-
 			}
 
 			@Override
 			public void onFailure(int errorCode, Object sender) {
-				if(connectListener != null) {
+				if (connectListener != null) {
 					connectListener.onConnectToFail(_pair);
 				}
 			}
 		});
 	}
 
-
-	public interface Messages{
+	public interface Messages {
 		void onMessageArrived(String message);
 	}
+
 	Messages messagesListener;
 
-	public void setMessagesListener(Messages messagesListener){
+	public void setMessagesListener(Messages messagesListener) {
 		this.messagesListener = messagesListener;
 	}
 
 
-	public void startTCPConnect(InetAddress ip){
+	public void startTCPConnect(InetAddress ip) {
 		TCPHelper.startConnector(new Connector(ip) {
 			@Override
 			public void handleConnectionEstablished(Socket socket, Object sender) {
@@ -161,7 +153,7 @@ public class DevicesService extends Service {
 		});
 	}
 
-	public void startTCPListener(){
+	public void startTCPListener() {
 		TCPHelper.startListener(new Listener(1) {
 			@Override
 			public void handleConnectionEstablished(Socket socket, Object sender) {
@@ -180,27 +172,28 @@ public class DevicesService extends Service {
 		});
 	}
 
-	public void stopTCPConnect(){
+	public void stopTCPConnect() {
 		communicator.close();
 	}
 
-	public void sendMessage(String content){
+	public void sendMessage(String content) {
 		communicator.send(content);
 	}
 
 
-	public interface P2PConnectStatu{
+	public interface P2PConnectStatus {
 		void onConnectStopped();
+
 		void onConnected();
 	}
-	P2PConnectStatu p2PConnectStatu;
 
-	public void setP2PConnectStatu(P2PConnectStatu p2PConnectStatu){
-		this.p2PConnectStatu = p2PConnectStatu;
+	P2PConnectStatus p2PConnectStatus;
+
+	public void setP2PConnectStatus(P2PConnectStatus p2PConnectStatus) {
+		this.p2PConnectStatus = p2PConnectStatus;
 	}
 
-
-	public class P2PListener extends WifiP2pStateListener{
+	public class P2PListener extends WifiP2pStateListener {
 
 		@Override
 		public void onStateChangeTo(boolean enable, Object sender) {
@@ -215,7 +208,7 @@ public class DevicesService extends Service {
 					devices.clear();
 					pairs.clear();
 					devices = peers.getDeviceList();
-					for(WifiP2pDevice wd: devices){
+					for (WifiP2pDevice wd : devices) {
 						pairs.add(new pair(wd.deviceName, wd.deviceAddress));
 					}
 					dl.onDeviceDiscover(pairs);
@@ -226,22 +219,24 @@ public class DevicesService extends Service {
 
 		@Override
 		public void onConnectionChanged(NetworkInfo info, Object sender) {
-			if(info.isConnected()){
-				p2PConnectStatu.onConnected();
+			if (info.isConnected()) {
+				p2PConnectStatus.onConnected();
 				wpsm.requestConnectionInfo(new WifiP2pManager.ConnectionInfoListener() {
 					@Override
 					public void onConnectionInfoAvailable(WifiP2pInfo info) {
 						InetAddress ip = info.groupOwnerAddress;
-						if(info.isGroupOwner) {
+						if (info.isGroupOwner) {
 							startTCPConnect(ip);
-						}else {
+						}
+						else {
 							startTCPListener();
 						}
 
 					}
 				});
-			}else {
-				p2PConnectStatu.onConnectStopped();
+			}
+			else {
+				p2PConnectStatus.onConnectStopped();
 			}
 
 		}
@@ -252,10 +247,7 @@ public class DevicesService extends Service {
 		}
 	}
 
-	public void cancleDiscover(){
+	public void cancelDiscover() {
 		wpsm.cancelDiscover();
 	}
-
-
-
 }

@@ -5,6 +5,7 @@ package bupt.wifidirectchat.adapter;
  */
 
 public class pair {
+
 	String title;
 	String content;
 
