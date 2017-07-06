@@ -25,11 +25,13 @@ public abstract class Listener implements Runnable {
 
 	private ServerSocket serverSocket = null;
 	private boolean      available    = false;
+	private int          backlog      = DEFAULT_BACKLOG;
 
-	public Listener(int localPort) {
+	public Listener(int localPort, int backlog) {
 		try {
-			this.serverSocket = new ServerSocket(localPort, DEFAULT_BACKLOG);
+			this.serverSocket = new ServerSocket(localPort, backlog);
 			this.serverSocket.setSoTimeout(DEFAULT_TIMEOUT);
+			this.backlog = backlog;
 			this.available = true;
 		}
 		catch (IOException ex) {
@@ -37,7 +39,7 @@ public abstract class Listener implements Runnable {
 		}
 	}
 
-	public Listener() { this(DEFAULT_SERVER_PORT); }
+	public Listener(int backlog) { this(DEFAULT_SERVER_PORT, backlog); }
 
 	/* try to close the  */
 	public void close() {
@@ -57,16 +59,20 @@ public abstract class Listener implements Runnable {
 
 	@Override
 	public void run() {
+		int count = 0;
 
-		while (available) {
+		while (available && count < backlog) {
 			try {
 				handleConnectionEstablished(serverSocket.accept(), this);
+				++count;
 			}
 
 			catch (IOException ex) {
 				/* timeout to check out available */
 			}
 		}
+
+		available = false;
 
 		Log.d(TAG, "listener finalized.");
 	}

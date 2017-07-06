@@ -80,6 +80,7 @@ public abstract class Communicator implements Runnable {
 	}
 
 	public abstract void handleMessageArrived(String content, Object sender);
+	public abstract void handleConnectionReset(Throwable throwable, Object sender);
 
 	@Override
 	public void run() {
@@ -108,6 +109,7 @@ public abstract class Communicator implements Runnable {
 				handleMessageArrived(builder.toString(), this);
 			}
 			catch (IOException ex) {
+				handleConnectionReset(ex, this);
 				Log.e(TAG, "exception in run", ex);
 				available = false;
 			}
