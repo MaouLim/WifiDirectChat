@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bupt.wifidirectchat.R;
-import bupt.wifidirectchat.activities.service.DevicesService;
-import bupt.wifidirectchat.adapter.ListAdapter;
-import bupt.wifidirectchat.adapter.pair;
+import bupt.wifidirectchat.services.DevicesService;
+import bupt.wifidirectchat.activities.adapters.ListAdapter;
+import bupt.wifidirectchat.activities.adapters.Pair;
 
 /*
  * Created by Liu Cong on 2017/7/6.
@@ -28,39 +28,37 @@ import bupt.wifidirectchat.adapter.pair;
 
 public class ChatActivity extends AppCompatActivity {
 
-	DevicesService binder = null;
+	private DevicesService binder = null;
 
 	ServiceConnection serviceConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			DevicesService.MBinder mb = (DevicesService.MBinder) service;
-			binder = mb.getService();
+			DevicesService.MBinder mBinder = (DevicesService.MBinder) service;
+			binder = mBinder.getService();
 			binder.setMessagesListener(new DevicesService.Messages() {
 				@Override
 				public void onMessageArrived(String message) {
-					messages.add(new pair(" ", message));
+					messages.add(new Pair(" ", message));
 					recyclerView.post(new Runnable() {
 						@Override
 						public void run() {
-							la.updateItems(messages);
+							listAdapter.updateItems(messages);
 						}
 					});
-
 				}
 			});
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
-
+			// empty
 		}
 	};
 
-	RecyclerView recyclerView;
-	ListAdapter la;
-	EditText inputText;
-	Button sendButton;
-	List<pair> messages = new ArrayList<>();
+	private RecyclerView recyclerView;
+	private ListAdapter listAdapter;
+	private EditText inputText;
+	private List<Pair> messages = new ArrayList<>();
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,32 +84,24 @@ public class ChatActivity extends AppCompatActivity {
 
 	private void initRecycleView() {
 		recyclerView = (RecyclerView) findViewById(R.id.chat_list);
-
-		la = new ListAdapter(this);
-
-
+		listAdapter = new ListAdapter(this);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-		la.initData(messages);
-
-		recyclerView.setAdapter(la);
+		listAdapter.initData(messages);
+		recyclerView.setAdapter(listAdapter);
 	}
 
-	// todo
 	private void initButtonListener() {
 		inputText = (EditText) findViewById(R.id.input_text);
-		sendButton = (Button) findViewById(R.id.send_button);
+		Button sendButton = (Button) findViewById(R.id.send_button);
 
 		sendButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String m = inputText.getText().toString();
-
-				messages.add(new pair("Self", m));
-				la.newItem(new pair("Self", m));
-				binder.sendMessage(m);
+				String content = inputText.getText().toString();
+				messages.add(new Pair("Self", content));
+				listAdapter.newItem(new Pair("Self", content));
+				binder.sendMessage(content);
 				inputText.setText("");
-
 			}
 		});
 	}

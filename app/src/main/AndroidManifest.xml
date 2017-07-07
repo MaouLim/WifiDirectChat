@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.ChatActivity"/>
-        <service android:name=".activities.service.DevicesService"/>
+        <service android:name=".services.DevicesService"/>
 
     </application>
 

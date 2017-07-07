@@ -1,4 +1,4 @@
-package bupt.wifidirectchat.service.wifi;
+package bupt.wifidirectchat.networks.wifi;
 
 /*
  * Created by Maou on 2017/7/5.
@@ -8,7 +8,6 @@ import android.content.Context;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
@@ -17,8 +16,8 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
-import bupt.wifidirectchat.service.wifi.handler.ResultListener;
-import bupt.wifidirectchat.service.wifi.handler.SameServiceFoundHandler;
+import bupt.wifidirectchat.networks.wifi.handler.ResultListener;
+import bupt.wifidirectchat.networks.wifi.handler.SameServiceFoundHandler;
 
 public class WifiP2pServiceManager {
 

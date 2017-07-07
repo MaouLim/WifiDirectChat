@@ -1,4 +1,4 @@
-package bupt.wifidirectchat.service.wifi;
+package bupt.wifidirectchat.networks.wifi;
 
 /*
  * Created by Maou on 2017/7/5.
@@ -12,10 +12,10 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
 
-import bupt.wifidirectchat.service.wifi.handler.ConnectionChangedHandler;
-import bupt.wifidirectchat.service.wifi.handler.DeviceChangedHandler;
-import bupt.wifidirectchat.service.wifi.handler.PeersListChangedHandler;
-import bupt.wifidirectchat.service.wifi.handler.WifiStateHandler;
+import bupt.wifidirectchat.networks.wifi.handler.ConnectionChangedHandler;
+import bupt.wifidirectchat.networks.wifi.handler.DeviceChangedHandler;
+import bupt.wifidirectchat.networks.wifi.handler.PeersListChangedHandler;
+import bupt.wifidirectchat.networks.wifi.handler.WifiStateHandler;
 
 public abstract class WifiP2pStateListener
 		extends BroadcastReceiver

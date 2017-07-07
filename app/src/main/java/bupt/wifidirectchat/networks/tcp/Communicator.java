@@ -1,4 +1,4 @@
-package bupt.wifidirectchat.service.tcp;
+package bupt.wifidirectchat.networks.tcp;
 
 /*
  * Created by Maou on 2017/7/5.
@@ -10,7 +10,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 /*
  * this class is to manage a connection with a tcp-connected remote endpoint.
