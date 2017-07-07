@@ -51,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
 				public void onDeviceDiscover(List<pair> devices) {
 					pairList.clear();
 					pairList.addAll(devices);
+					if(pairList.size()!=0){
+						rv.post(new Runnable() {
+							@Override
+							public void run() {
+								updateWifiDevices();
+							}
+						});
+					}
 					Log.e("MainActivity", "Devices size " + pairList.size());
 
 				}
