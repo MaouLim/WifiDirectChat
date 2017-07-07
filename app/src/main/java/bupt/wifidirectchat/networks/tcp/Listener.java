@@ -1,4 +1,4 @@
-package bupt.wifidirectchat.service.tcp;
+package bupt.wifidirectchat.networks.tcp;
 
 /*
  * Created by Maou on 2017/7/5.

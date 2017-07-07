@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.IBinder;
@@ -20,13 +19,11 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import bupt.wifidirectchat.R;
-import bupt.wifidirectchat.activities.service.DevicesService;
-import bupt.wifidirectchat.adapter.ListAdapter;
-import bupt.wifidirectchat.adapter.pair;
+import bupt.wifidirectchat.services.DevicesService;
+import bupt.wifidirectchat.activities.adapters.ListAdapter;
+import bupt.wifidirectchat.activities.adapters.Pair;
 
 /*
  * Created by Liu Cong on 2017/7/6.
@@ -34,25 +31,25 @@ import bupt.wifidirectchat.adapter.pair;
 
 public class MainActivity extends AppCompatActivity {
 
-	DevicesService binder = null;
+	private DevicesService binder = null;
 	private boolean isConnecting = false;
 
 	ServiceConnection serviceConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			DevicesService.MBinder mb = (DevicesService.MBinder) service;
-			binder = mb.getService();
+			DevicesService.MBinder mBinder = (DevicesService.MBinder) service;
+			binder = mBinder.getService();
 			binder.startListener();
 			binder.initManager(MainActivity.this, (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE));
 
 			binder.searchDevices();
 			binder.setDeviceListener(new DevicesService.DeviceListener() {
 				@Override
-				public void onDeviceDiscover(List<pair> devices) {
+				public void onDeviceDiscover(List<Pair> devices) {
 					pairList.clear();
 					pairList.addAll(devices);
-					if(pairList.size()!=0){
-						rv.post(new Runnable() {
+					if (pairList.size() != 0) {
+						recyclerView.post(new Runnable() {
 							@Override
 							public void run() {
 								updateWifiDevices();
@@ -67,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 			binder.setP2PConnectStatus(new DevicesService.P2PConnectStatus() {
 				@Override
 				public void onConnectStopped() {
-					rv.post(new Runnable() {
+					recyclerView.post(new Runnable() {
 						@Override
 						public void run() {
 							Toast.makeText(MainActivity.this, "p2p连接已中断", Toast.LENGTH_SHORT).show();
@@ -78,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
 				@Override
 				public void onConnected() {
-					Log.e("MainActivity" ," Connected");
+					Log.e("MainActivity", " Connected");
 					isConnecting = false;
 					startActivity(new Intent(MainActivity.this, ChatActivity.class));
 					binder.cancelDiscover();
@@ -92,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
 		}
 	};
 
-	List<pair> pairList = new ArrayList<>();
-	RecyclerView rv;
-	ListAdapter la;
+	private List<Pair> pairList = new ArrayList<>();
+	private RecyclerView recyclerView;
+	private ListAdapter listAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,22 +103,20 @@ public class MainActivity extends AppCompatActivity {
 		initToolBar();
 		initList();
 		initButtonListener();
-
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if(binder!=null) {
+		if (binder != null) {
 			binder.searchDevices();
 		}
 	}
 
-	// todo
 	@Override
 	public void onResume() {
 		super.onResume();
-		if(binder!=null) {
+		if (binder != null) {
 			binder.startListener();
 		}
 	}
@@ -129,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public void onPause() {
 		super.onPause();
-		if(binder != null) {
+		if (binder != null) {
 			binder.pauseListener();
 		}
 	}
@@ -156,23 +151,19 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	public void initList() {
-		rv = (RecyclerView) findViewById(R.id.device_list);
-
-		la = new ListAdapter(this);
-
-		la.initData(pairList);
-
-		rv.setLayoutManager(new LinearLayoutManager(this));
-
-		rv.setAdapter(la);
+		recyclerView = (RecyclerView) findViewById(R.id.device_list);
+		listAdapter = new ListAdapter(this);
+		listAdapter.initData(pairList);
+		recyclerView.setLayoutManager(new LinearLayoutManager(this));
+		recyclerView.setAdapter(listAdapter);
 	}
 
 	public void updateWifiDevices() {
-		la.updateItems(pairList);
+		listAdapter.updateItems(pairList);
 	}
 
 	public void initButtonListener() {
-		la.setItemClick(new ListAdapter.ItemClick() {
+		listAdapter.setItemClick(new ListAdapter.ItemClick() {
 			@Override
 			public void onItemClick(int position, String content) {
 				if (!isConnecting) {
@@ -180,10 +171,10 @@ public class MainActivity extends AppCompatActivity {
 					Log.e("ItemClick", "BeginConnect");
 					binder.connectToDevice(content, new DevicesService.ConnectListener() {
 						@Override
-						public void onConnectToSuccess(pair _pair) { }
+						public void onConnectToSuccess(Pair pair) { }
 
 						@Override
-						public void onConnectToFail(pair _pair) { }
+						public void onConnectToFail(Pair pair) { }
 					});
 				}
 				else {
@@ -192,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 	}
-
 
 
 }

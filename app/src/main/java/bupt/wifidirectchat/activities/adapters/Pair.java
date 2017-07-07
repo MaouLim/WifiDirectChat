@@ -1,15 +1,15 @@
-package bupt.wifidirectchat.adapter;
+package bupt.wifidirectchat.activities.adapters;
 
 /*
  * Created by Liu Cong on 2017/7/6.
  */
 
-public class pair {
+public class Pair {
 
-	String title;
-	String content;
+	private String title;
+	private String content;
 
-	public pair(String title, String content) {
+	public Pair(String title, String content) {
 		this.title = title;
 		this.content = content;
 	}
