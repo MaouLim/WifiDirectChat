@@ -107,7 +107,7 @@ public class DevicesService extends Service {
 		void onConnectToFail(Pair pair);
 	}
 
-	ConnectListener connectListener;
+	private ConnectListener connectListener;
 
 	public void connectToDevice(final String deviceAddress, ConnectListener listener) {
 		connectListener = listener;
@@ -213,14 +213,13 @@ public class DevicesService extends Service {
 		void onConnected();
 	}
 
-	P2PConnectStatus p2PConnectStatus;
+	private P2PConnectStatus p2PConnectStatus;
 
 	public void setP2PConnectStatus(P2PConnectStatus p2PConnectStatus) {
 		this.p2PConnectStatus = p2PConnectStatus;
 	}
 
-	P2PListener p2PListener = new P2PListener();
-
+	public P2PListener p2PListener = new P2PListener();
 
 	public class P2PListener extends WifiP2pStateListener {
 

@@ -20,27 +20,17 @@ import bupt.wifidirectchat.R;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.viewHolder> {
 
-	private List<Pair> pairs = new ArrayList<>();
-	private LayoutInflater inflater;
+	private List<Pair>     pairs     = new ArrayList<>();
+	private LayoutInflater inflater  = null;
+	private ItemClick      itemClick = null;
 
 	public ListAdapter(Context context) {
 		inflater = LayoutInflater.from(context);
 	}
 
-
 	@Override
 	public ListAdapter.viewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		return new viewHolder(inflater.inflate(R.layout.item_pair, parent, false));
-	}
-
-	public interface ItemClick {
-		void onItemClick(int position, String itemContent);
-	}
-
-	private ItemClick itemClick = null;
-
-	public void setItemClick(ItemClick itemClick) {
-		this.itemClick = itemClick;
 	}
 
 	@Override
@@ -66,10 +56,15 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.viewHolder> {
 		return pairs.size();
 	}
 
+	public interface ItemClick {
+		void onItemClick(int position, String itemContent);
+	}
+
 	public class viewHolder extends RecyclerView.ViewHolder {
-		private TextView title;
-		private TextView content;
-		private LinearLayout linearLayout;
+
+		private TextView title = null;
+		private TextView content = null;
+		private LinearLayout linearLayout = null;
 
 		public viewHolder(View itemView) {
 			super(itemView);
@@ -90,18 +85,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.viewHolder> {
 		notifyDataSetChanged();
 	}
 
-	public void removeItem(Pair pair) {
-		int i = 0;
-		for (; i < pairs.size(); i++) {
-			if (pairs.get(i).getTitle().equals(pair.getTitle())) {
-				break;
-			}
-		}
-
-		pairs.remove(0);
-		notifyDataSetChanged();
-	}
-
 	public void updateItems(List<Pair> pairs) {
 		this.pairs.clear();
 		this.pairs.addAll(pairs);
@@ -109,4 +92,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.viewHolder> {
 		notifyDataSetChanged();
 	}
 
+	public void setItemClick(ItemClick itemClick) {
+		this.itemClick = itemClick;
+	}
 }

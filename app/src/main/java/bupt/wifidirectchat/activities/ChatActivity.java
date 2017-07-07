@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bupt.wifidirectchat.R;
-import bupt.wifidirectchat.services.DevicesService;
 import bupt.wifidirectchat.activities.adapters.ListAdapter;
 import bupt.wifidirectchat.activities.adapters.Pair;
+import bupt.wifidirectchat.services.DevicesService;
 
 /*
  * Created by Liu Cong on 2017/7/6.
@@ -28,9 +28,13 @@ import bupt.wifidirectchat.activities.adapters.Pair;
 
 public class ChatActivity extends AppCompatActivity {
 
-	private DevicesService binder = null;
+	private DevicesService binder       = null;
+	private RecyclerView   recyclerView = null;
+	private ListAdapter    listAdapter  = null;
+	private EditText       inputText    = null;
+	private List<Pair>     messages     = new ArrayList<>();
 
-	ServiceConnection serviceConnection = new ServiceConnection() {
+	private ServiceConnection serviceConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			DevicesService.MBinder mBinder = (DevicesService.MBinder) service;
@@ -54,11 +58,6 @@ public class ChatActivity extends AppCompatActivity {
 			// empty
 		}
 	};
-
-	private RecyclerView recyclerView;
-	private ListAdapter listAdapter;
-	private EditText inputText;
-	private List<Pair> messages = new ArrayList<>();
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,5 +104,4 @@ public class ChatActivity extends AppCompatActivity {
 			}
 		});
 	}
-
 }

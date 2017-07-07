@@ -6,8 +6,8 @@ package bupt.wifidirectchat.activities.adapters;
 
 public class Pair {
 
-	private String title;
-	private String content;
+	private String title   = null;
+	private String content = null;
 
 	public Pair(String title, String content) {
 		this.title = title;
